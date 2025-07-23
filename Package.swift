@@ -1,12 +1,10 @@
-// swift-tools-version: 5.6
-// The swift-tools-version declares the minimum version of Swift required to build this package.
-
+// swift-tools-version:5.6
 import PackageDescription
 
 let package = Package(
     name: "TaskAPI",
     platforms: [
-       .macOS(.v13)
+       .macOS(.v12)  // Changed from .v13 to .v12 for Swift 5.6 compatibility
     ],
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.89.0"),
