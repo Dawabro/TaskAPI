@@ -1,0 +1,22 @@
+{
+  "name": "Task Management API",
+  "description": "A Swift Vapor API for task management",
+  "keywords": ["swift", "vapor", "api", "tasks"],
+  "stack": "heroku-22",
+  "buildpacks": [
+    {
+      "url": "https://github.com/vapor-community/heroku-buildpack"
+    }
+  ],
+  "addons": [
+    {
+      "plan": "heroku-postgresql:essential-0"
+    }
+  ],
+  "env": {
+    "LOG_LEVEL": {
+      "description": "Log level for the application",
+      "value": "info"
+    }
+  }
+}
