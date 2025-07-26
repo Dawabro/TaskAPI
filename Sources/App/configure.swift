@@ -5,8 +5,14 @@ import FluentPostgresDriver
 public func configure(_ app: Application) async throws {
     // Configure database
     if let databaseURL = Environment.get("DATABASE_URL") {
-        // Heroku provides DATABASE_URL
-        try app.databases.use(.postgres(url: databaseURL), as: .psql)
+        // Railway PostgreSQL with SSL handling
+        var tlsConfig = TLSConfiguration.makeClientConfiguration()
+        tlsConfig.certificateVerification = .none // Disable cert verification for Railway
+        
+        var postgresConfig = try SQLPostgresConfiguration(url: databaseURL)
+        postgresConfig.tls = .require(tlsConfig)
+        
+        app.databases.use(.postgres(configuration: postgresConfig), as: .psql)
     } else {
         // Local development configuration
         let configuration = SQLPostgresConfiguration(
@@ -15,7 +21,7 @@ public func configure(_ app: Application) async throws {
             username: Environment.get("DATABASE_USERNAME") ?? "vapor_username",
             password: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
             database: Environment.get("DATABASE_NAME") ?? "vapor_database",
-            tls: .prefer(try .init(configuration: .clientDefault))
+            tls: .disable
         )
         app.databases.use(.postgres(configuration: configuration), as: .psql)
     }
@@ -35,7 +41,7 @@ public func configure(_ app: Application) async throws {
     // Register routes
     try routes(app)
     
-    // Auto-migrate on startup
+    // Auto-migrate on startup 
     if app.environment == .development || app.environment == .production {
         try await app.autoMigrate()
     }
