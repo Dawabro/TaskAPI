@@ -2,10 +2,10 @@ FROM swift:5.6-focal
 
 WORKDIR /app
 
-# Copy package files
-COPY Package.swift Package.resolved ./
+# Copy package manifest
+COPY Package.swift ./
 
-# Resolve dependencies
+# Resolve dependencies (this will create a new Package.resolved)
 RUN swift package resolve
 
 # Copy source code
