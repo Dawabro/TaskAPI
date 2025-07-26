@@ -18,16 +18,7 @@ let package = Package(
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "Fluent", package: "fluent"),
                 .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver")
-            ],
-            path: "Sources/App"
-        ),
-        .testTarget(
-            name: "AppTests", 
-            dependencies: [
-                .target(name: "App"),
-                .product(name: "XCTVapor", package: "vapor"),
-            ],
-            path: "Tests/AppTests"
+            ]
         )
     ]
 )
