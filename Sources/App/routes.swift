@@ -11,9 +11,10 @@ func routes(_ app: Application) throws {
     }
     
     app.get("health") { req async in
+        let formatter = ISO8601DateFormatter()
         return [
             "status": "healthy",
-            "timestamp": Date().ISO8601Format()
+            "timestamp": formatter.string(from: Date())
         ]
     }
     
