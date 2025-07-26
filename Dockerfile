@@ -1,11 +1,11 @@
-FROM swift:5.6-focal
+FROM swift:5.10-jammy
 
 WORKDIR /app
 
 # Copy package manifest
 COPY Package.swift ./
 
-# Resolve dependencies (this will create a new Package.resolved)
+# Resolve dependencies
 RUN swift package resolve
 
 # Copy source code
