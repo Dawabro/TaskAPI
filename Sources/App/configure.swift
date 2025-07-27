@@ -5,25 +5,20 @@ import FluentPostgresDriver
 public func configure(_ app: Application) async throws {
     // Configure database
     if let databaseURL = Environment.get("DATABASE_URL") {
-        // Railway PostgreSQL with SSL handling
-        var tlsConfig = TLSConfiguration.makeClientConfiguration()
-        tlsConfig.certificateVerification = .none // Disable cert verification for Railway
-        
-        var postgresConfig = try SQLPostgresConfiguration(url: databaseURL)
-        postgresConfig.tls = .require(tlsConfig)
-        
-        app.databases.use(.postgres(configuration: postgresConfig), as: .psql)
+        // Railway PostgreSQL - use URL directly, it handles SSL
+        try app.databases.use(.postgres(url: databaseURL), as: .psql)
     } else {
         // Local development configuration
-        let configuration = SQLPostgresConfiguration(
-            hostname: Environment.get("DATABASE_HOST") ?? "localhost",
-            port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? 5432,
-            username: Environment.get("DATABASE_USERNAME") ?? "vapor_username",
-            password: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
-            database: Environment.get("DATABASE_NAME") ?? "vapor_database",
-            tls: .disable
+        app.databases.use(
+            .postgres(
+                hostname: Environment.get("DATABASE_HOST") ?? "localhost",
+                port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? 5432,
+                username: Environment.get("DATABASE_USERNAME") ?? "vapor_username",
+                password: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
+                database: Environment.get("DATABASE_NAME") ?? "vapor_database"
+            ),
+            as: .psql
         )
-        app.databases.use(.postgres(configuration: configuration), as: .psql)
     }
     
     // Add migrations
